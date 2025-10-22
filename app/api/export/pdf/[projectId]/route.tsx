@@ -82,7 +82,7 @@ export async function GET(
       "-"
     )}-${Date.now()}.pdf`;
 
-    return new Response(pdfBuffer as unknown as BodyInit, {
+    return new Response(new Uint8Array(pdfBuffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${filename}"`,
