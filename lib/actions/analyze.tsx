@@ -98,6 +98,7 @@ function processPayment(amount) {
     // Run complete analysis with selected model and configuration
     const results = await analyzeCodeComplete(
       mockFiles,
+      user.id,
       selectedModel,
       projectId,
       {
@@ -228,20 +229,23 @@ function processPayment(amount) {
     );
 
     try {
-      const valuationResult = await calculateValuation({
-        projectName: project.name,
-        description: project.description,
-        fileCount: project.file_count,
-        totalLines: project.total_lines,
-        languages: project.languages || [],
-        overallScore,
-        securityScore: scores.security,
-        codeQualityScore: scores.code_quality,
-        performanceScore: scores.performance,
-        bugsScore: scores.bugs,
-        maintainabilityScore: scores.maintainability,
-        architectureScore: scores.architecture,
-      });
+      const valuationResult = await calculateValuation(
+        {
+          projectName: project.name,
+          description: project.description,
+          fileCount: project.file_count,
+          totalLines: project.total_lines,
+          languages: project.languages || [],
+          overallScore,
+          securityScore: scores.security,
+          codeQualityScore: scores.code_quality,
+          performanceScore: scores.performance,
+          bugsScore: scores.bugs,
+          maintainabilityScore: scores.maintainability,
+          architectureScore: scores.architecture,
+        },
+        user.id
+      );
 
       // Insert valuation record with new comprehensive structure
       const { error: valuationError } = await supabase

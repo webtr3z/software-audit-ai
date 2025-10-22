@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { getPrompt } from "./prompt-service";
 
 // Lazy client creation to avoid errors during build/render
 let anthropicClient: Anthropic | null = null;
@@ -298,14 +299,18 @@ Valor Máximo = Valor Ajustado × 1.4
 - ✅ Valor realista: $500,000 - $800,000 (incluye activo de negocio)`;
 
 export async function calculateValuation(
-  input: ValuationInput
+  input: ValuationInput,
+  userId: string
 ): Promise<ValuationResult> {
   console.log(
     "[v0] Starting valuation calculation for project:",
     input.projectName
   );
 
-  const prompt = `${VALUATION_PROMPT}
+  // Get custom or default valuation prompt
+  const valuationPrompt = await getPrompt(userId, "valuation");
+
+  const prompt = `${valuationPrompt}
 
 INFORMACIÓN DEL PROYECTO:
 - Nombre: ${input.projectName}

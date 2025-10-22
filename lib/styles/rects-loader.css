@@ -17,7 +17,7 @@
   animation: rotation 2s ease-in-out infinite;
 }
 .loader::after {
-  border-color: #ff3d00;
+  border-color: #9aff8d;
   animation-delay: 1s;
 }
 

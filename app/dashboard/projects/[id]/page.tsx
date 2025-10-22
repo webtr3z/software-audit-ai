@@ -35,6 +35,8 @@ import { FixSuggestionDialog } from "@/components/fix-suggestion-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ModelConfigForm } from "@/components/model-config-form";
 import { ComprehensiveValuationDisplay } from "@/components/comprehensive-valuation-display";
+import { PromptEditor } from "@/components/prompt-editor";
+import { getAllUserPrompts } from "@/lib/ai/prompt-service";
 import { Settings } from "lucide-react";
 
 export default async function ProjectDetailPage({
@@ -94,6 +96,9 @@ export default async function ProjectDetailPage({
   const criticalIssues =
     issues?.filter((i) => i.severity === "critical").length || 0;
   const highIssues = issues?.filter((i) => i.severity === "high").length || 0;
+
+  // Fetch user prompts for prompt editor
+  const userPrompts = await getAllUserPrompts(user.id);
 
   return (
     <div className="space-y-6">
@@ -554,6 +559,8 @@ export default async function ProjectDetailPage({
               analysis_config: project.analysis_config,
             }}
           />
+
+          <PromptEditor initialPrompts={userPrompts} />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { ANALYSIS_PROMPTS, type AnalysisCategory } from "./prompts";
+import { getPrompt } from "./prompt-service";
 
 // Lazy client creation to avoid errors during build/render
 let anthropicClient: Anthropic | null = null;
@@ -69,6 +70,7 @@ export interface AnalysisConfig {
 export async function analyzeCodeCategory(
   category: AnalysisCategory,
   files: CodeFile[],
+  userId: string,
   model: string = "claude-sonnet-4-5-20250929",
   retryCount: number = 0,
   config?: AnalysisConfig
@@ -97,7 +99,10 @@ ${file.content}
     })
     .join("\n\n");
 
-  const prompt = `${ANALYSIS_PROMPTS[category]}
+  // Get custom or default prompt for the category
+  const categoryPrompt = await getPrompt(userId, category);
+
+  const prompt = `${categoryPrompt}
 
 CÓDIGO A ANALIZAR:
 ${codeContext}
@@ -217,6 +222,7 @@ IMPORTANTE: Responde SOLO con un JSON válido y completo. Asegúrate de que toda
             return analyzeCodeCategory(
               category,
               files,
+              userId,
               model,
               retryCount + 1,
               config
@@ -260,6 +266,7 @@ IMPORTANTE: Responde SOLO con un JSON válido y completo. Asegúrate de que toda
 
 export async function analyzeCodeComplete(
   files: CodeFile[],
+  userId: string,
   model: string = "claude-sonnet-4-5-20250929",
   projectId?: string,
   config?: AnalysisConfig
@@ -299,6 +306,7 @@ export async function analyzeCodeComplete(
   const security = await analyzeCodeCategory(
     "security",
     files,
+    userId,
     model,
     0,
     config
@@ -308,6 +316,7 @@ export async function analyzeCodeComplete(
   const code_quality = await analyzeCodeCategory(
     "code_quality",
     files,
+    userId,
     model,
     0,
     config
@@ -317,18 +326,27 @@ export async function analyzeCodeComplete(
   const performance = await analyzeCodeCategory(
     "performance",
     files,
+    userId,
     model,
     0,
     config
   );
 
   emitStatus("Detectando bugs potenciales...", "bugs");
-  const bugs = await analyzeCodeCategory("bugs", files, model, 0, config);
+  const bugs = await analyzeCodeCategory(
+    "bugs",
+    files,
+    userId,
+    model,
+    0,
+    config
+  );
 
   emitStatus("Analizando mantenibilidad...", "maintainability");
   const maintainability = await analyzeCodeCategory(
     "maintainability",
     files,
+    userId,
     model,
     0,
     config
@@ -338,6 +356,7 @@ export async function analyzeCodeComplete(
   const architecture = await analyzeCodeCategory(
     "architecture",
     files,
+    userId,
     model,
     0,
     config

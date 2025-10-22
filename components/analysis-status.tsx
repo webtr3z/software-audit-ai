@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import GeometricLoader from "./loaders/geometric-loader";
+import SparkyLoader from "./loaders/sparky-loader";
 
 interface AnalysisStatusProps {
   isAnalyzing: boolean;
@@ -62,29 +63,11 @@ export function AnalysisStatus({
   if (!isAnalyzing) return null;
 
   return (
-    <Card className="border-primary/20 bg-primary/5">
+    <Card className="">
       <CardContent className="">
         <div className="flex items-center gap-3 justify-center">
-          <GeometricLoader />
-          {/* <Loader2 className="h-5 w-5 text-primary animate-spin" />
-          <div className="flex-1 text-center max-w-md mx-auto">
-            <p className="text-sm font-medium text-primary">
-              {statusMessage}
-              <span className="inline-block w-8 text-left">{dots}</span>
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Esto puede tomar entre 1-2 minutos. Por favor espera...
-            </p>
-          </div> */}
+          <SparkyLoader />
         </div>
-
-        {/* Simple progress bar */}
-        {/* <div className="mt-4 h-1 w-full bg-muted rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary animate-pulse"
-            style={{ width: "60%" }}
-          />
-        </div> */}
       </CardContent>
     </Card>
   );

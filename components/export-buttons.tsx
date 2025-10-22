@@ -8,7 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Download, FileJson, FileSpreadsheet, FileText } from "lucide-react";
-import { exportAnalysisJSON, exportAnalysisCSV } from "@/lib/actions/export";
+import {
+  exportAnalysisJSON,
+  exportAnalysisCSV,
+  exportAnalysisMarkdown,
+} from "@/lib/actions/export";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -81,37 +85,34 @@ export function ExportButtons({ projectId, projectName }: ExportButtonsProps) {
     }
   };
 
-  const handleExportPDF = async () => {
+  const handleExportMarkdown = async () => {
     setIsExporting(true);
     try {
-      const response = await fetch(`/api/export/pdf/${projectId}`);
-
-      if (!response.ok) {
-        throw new Error("Error al generar el PDF");
-      }
-
-      const blob = await response.blob();
+      const markdown = await exportAnalysisMarkdown(projectId);
+      const blob = new Blob([markdown], {
+        type: "text/markdown;charset=utf-8;",
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = `auditoria-${projectName.replace(
         /[^a-z0-9]/gi,
         "-"
-      )}-${Date.now()}.pdf`;
+      )}-${Date.now()}.md`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       toast({
-        title: "PDF generado exitosamente",
-        description: "El reporte completo se ha descargado",
+        title: "Markdown generado exitosamente",
+        description: "El reporte completo se ha descargado en formato Markdown",
       });
     } catch (error) {
-      console.error("[v0] Error exporting PDF:", error);
+      console.error("[v0] Error exporting Markdown:", error);
       toast({
         title: "Error",
-        description: "No se pudo generar el reporte PDF",
+        description: "No se pudo generar el reporte Markdown",
         variant: "destructive",
       });
     } finally {
@@ -136,9 +137,9 @@ export function ExportButtons({ projectId, projectName }: ExportButtonsProps) {
           <FileSpreadsheet className="mr-2 h-4 w-4" />
           Exportar problemas (CSV)
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleExportPDF}>
+        <DropdownMenuItem onClick={handleExportMarkdown}>
           <FileText className="mr-2 h-4 w-4" />
-          Exportar como PDF
+          Exportar como Markdown
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
