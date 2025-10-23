@@ -63,8 +63,8 @@ export function AnalysisStatus({
   if (!isAnalyzing) return null;
 
   return (
-    <Card className="">
-      <CardContent className="">
+    <Card className="p-[0px]!">
+      <CardContent className="p-[0px]!">
         <div className="flex items-center gap-3 justify-center">
           <SparkyLoader />
         </div>

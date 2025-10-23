@@ -3,6 +3,7 @@ import GeometricLoader from "@/components/loaders/geometric-loader";
 import RectsLoader from "@/components/loaders/rects-loader";
 import { Card, CardContent } from "@/components/ui/card";
 import SparkyLoader from "@/components/loaders/sparky-loader";
+import { AnalysisStatus } from "@/components/analysis-status";
 
 export default function PlaygroundPage() {
   return (
@@ -14,7 +15,7 @@ export default function PlaygroundPage() {
       </Card> */}
       <GeometricLoader />
       {/* <RectsLoader /> */}
-      <SparkyLoader />
+      <AnalysisStatus isAnalyzing={true} projectId="123" />
     </div>
   );
 }
