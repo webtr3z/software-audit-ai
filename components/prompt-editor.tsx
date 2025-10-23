@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -21,16 +20,43 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Save, RotateCcw, FileCode, AlertCircle } from "lucide-react";
 import type { PromptType } from "@/lib/ai/prompt-service";
+import dynamic from "next/dynamic";
+
+// Dynamically import code editor to avoid SSR issues
+const Editor = dynamic(
+  () => import("react-simple-code-editor").then((mod) => mod.default),
+  { ssr: false }
+);
+
+// Import Prism for syntax highlighting
+import { highlight, languages } from "prismjs";
+import "prismjs/components/prism-markdown";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-json";
+import "prismjs/themes/prism-tomorrow.css";
 
 interface PromptEditorProps {
   initialPrompts: Record<PromptType, string>;
 }
+
+type SyntaxLanguage =
+  | "markdown"
+  | "javascript"
+  | "typescript"
+  | "jsx"
+  | "tsx"
+  | "json";
 
 export function PromptEditor({ initialPrompts }: PromptEditorProps) {
   const [selectedType, setSelectedType] = useState<PromptType>("security");
   const [promptContent, setPromptContent] = useState<string>(
     initialPrompts[selectedType] || ""
   );
+  const [syntaxLanguage, setSyntaxLanguage] =
+    useState<SyntaxLanguage>("markdown");
   const [isSaving, setIsSaving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -44,6 +70,15 @@ export function PromptEditor({ initialPrompts }: PromptEditorProps) {
     { value: "maintainability", label: "🔧 Mantenibilidad" },
     { value: "architecture", label: "🏗️ Arquitectura" },
     { value: "valuation", label: "💰 Valoración" },
+  ];
+
+  const syntaxLanguages: Array<{ value: SyntaxLanguage; label: string }> = [
+    { value: "markdown", label: "Markdown" },
+    { value: "json", label: "JSON" },
+    { value: "javascript", label: "JavaScript" },
+    { value: "typescript", label: "TypeScript" },
+    { value: "jsx", label: "JSX" },
+    { value: "tsx", label: "TSX" },
   ];
 
   const handleTypeChange = (value: string) => {
@@ -188,7 +223,32 @@ export function PromptEditor({ initialPrompts }: PromptEditorProps) {
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium">Contenido del Prompt</label>
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium">
+                Contenido del Prompt
+              </label>
+              <Select
+                value={syntaxLanguage}
+                onValueChange={(value) =>
+                  setSyntaxLanguage(value as SyntaxLanguage)
+                }
+              >
+                <SelectTrigger className="w-[140px] h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {syntaxLanguages.map((lang) => (
+                    <SelectItem
+                      key={lang.value}
+                      value={lang.value}
+                      className="text-xs"
+                    >
+                      {lang.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex items-center gap-2 text-xs">
               <span
                 className={
@@ -207,13 +267,28 @@ export function PromptEditor({ initialPrompts }: PromptEditorProps) {
               )}
             </div>
           </div>
-          <Textarea
-            value={promptContent}
-            onChange={(e) => handleContentChange(e.target.value)}
-            rows={20}
-            className="font-mono text-xs"
-            placeholder="Escribe tu prompt personalizado aquí..."
-          />
+          <div className="border rounded-md overflow-hidden bg-[#2d2d2d]">
+            <Editor
+              value={promptContent}
+              onValueChange={(code) => handleContentChange(code)}
+              highlight={(code) => {
+                try {
+                  const lang = languages[syntaxLanguage];
+                  return lang ? highlight(code, lang, syntaxLanguage) : code;
+                } catch (e) {
+                  return code;
+                }
+              }}
+              padding={16}
+              style={{
+                fontFamily: '"Fira Code", "Fira Mono", monospace',
+                fontSize: 13,
+                minHeight: "500px",
+                backgroundColor: "#2d2d2d",
+              }}
+              placeholder="Escribe tu prompt personalizado aquí..."
+            />
+          </div>
           {isOverLimit && (
             <div className="flex items-center gap-2 mt-2 text-xs text-destructive">
               <AlertCircle className="h-3 w-3" />
@@ -248,6 +323,10 @@ export function PromptEditor({ initialPrompts }: PromptEditorProps) {
         <div className="p-4 bg-muted/50 rounded-lg">
           <h4 className="text-sm font-medium mb-2">💡 Consejos</h4>
           <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
+            <li>
+              Usa el selector de lenguaje para resaltado de sintaxis (Markdown,
+              JSON, JS, TS, JSX, TSX)
+            </li>
             <li>Mantén las instrucciones claras y específicas</li>
             <li>
               Especifica el formato de salida esperado (JSON, estructura,
