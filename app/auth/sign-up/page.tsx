@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -62,8 +63,18 @@ export default function SignUpPage() {
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <Card>
+      <div className="w-full max-w-sm flex flex-col gap-4">
+        <h2 className="text-2xl font-bold">Oops!</h2>
+        <p className="text-muted-foreground">
+          En este momento no estamos tomando nuevos registros. Por favor,
+          intenta más tarde.
+        </p>
+        <Link href="/" className="text-primary flex items-center gap-2">
+          <ArrowLeft className="h-4 w-4" />
+          Volver a la página principal
+        </Link>
+
+        {/* <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Crear Cuenta</CardTitle>
             <CardDescription>
@@ -131,7 +142,7 @@ export default function SignUpPage() {
               </div>
             </form>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

@@ -1,27 +1,37 @@
-import type React from "react"
-import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { FileSearch, LayoutDashboard, FolderOpen, LogOut } from "lucide-react"
+import type React from "react";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import {
+  FileSearch,
+  LayoutDashboard,
+  FolderOpen,
+  LogOut,
+  Settings,
+} from "lucide-react";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/auth/login")
+    redirect("/auth/login");
   }
 
   const handleSignOut = async () => {
-    "use server"
-    const supabase = await createClient()
-    await supabase.auth.signOut()
-    redirect("/auth/login")
-  }
+    "use server";
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+    redirect("/auth/login");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,6 +70,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 Mis Proyectos
               </Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard/settings" className="gap-2">
+                <Settings className="h-4 w-4" />
+                Configuración
+              </Link>
+            </Button>
           </div>
         </div>
       </nav>
@@ -67,5 +83,5 @@ export default async function DashboardLayout({ children }: { children: React.Re
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">{children}</main>
     </div>
-  )
+  );
 }
