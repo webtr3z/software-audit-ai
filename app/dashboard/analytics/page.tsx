@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ProjectsTable } from "@/components/projects-table";
+import { ConsolidatedReportsList } from "@/components/consolidated-reports-list";
 import { BarChart3 } from "lucide-react";
 
 export default async function AnalyticsPage() {
@@ -13,6 +14,13 @@ export default async function AnalyticsPage() {
   if (!user) {
     redirect("/auth/login");
   }
+
+  // Fetch all user's consolidated reports
+  const { data: consolidatedReports, error: reportsError } = await supabase
+    .from("consolidated_reports")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
 
   // Fetch all user's projects with latest analysis
   const { data: projects, error: projectsError } = await supabase
@@ -76,6 +84,16 @@ export default async function AnalyticsPage() {
         </p>
       </div>
 
+      {/* Consolidated Reports Section */}
+      {reportsError && (
+        <div className="border border-destructive rounded-lg p-4 text-destructive">
+          Error al cargar reportes: {reportsError.message}
+        </div>
+      )}
+
+      <ConsolidatedReportsList reports={consolidatedReports || []} />
+
+      {/* Projects Table Section */}
       {projectsError && (
         <div className="border border-destructive rounded-lg p-4 text-destructive">
           Error al cargar proyectos: {projectsError.message}
