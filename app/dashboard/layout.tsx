@@ -9,6 +9,7 @@ import {
   FolderOpen,
   LogOut,
   Settings,
+  BarChart3,
 } from "lucide-react";
 
 export default async function DashboardLayout({
@@ -71,7 +72,13 @@ export default async function DashboardLayout({
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard/settings" className="gap-2">
+              <Link href="/dashboard/analytics" className="gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Analítica
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard/config" className="gap-2">
                 <Settings className="h-4 w-4" />
                 Configuración
               </Link>

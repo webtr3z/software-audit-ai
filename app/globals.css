@@ -11,17 +11,21 @@
   --popover: oklch(0.3085 0.0035 106.6039);
   --popover-foreground: oklch(0.9211 0.004 106.4781);
   --primary: oklch(0.6724 0.1308 38.7559);
-  --primary-foreground: oklch(1 0 0);
+  --primary-foreground: oklch(0.2679 0.0036 106.6427);
   --secondary: oklch(0.9818 0.0054 95.0986);
   --secondary-foreground: oklch(0.3085 0.0035 106.6039);
   --muted: oklch(0.2213 0.0038 106.707);
   --muted-foreground: oklch(0.7713 0.0169 99.0657);
   --accent: oklch(0.213 0.0078 95.4245);
   --accent-foreground: oklch(0.9663 0.008 98.8792);
-  --destructive: oklch(0.6368 0.2078 25.3313);
+  --destructive: #fa7979;
   --success: #9aff8d;
+  --warning: #ffe678;
+  --info: #7bbff7;
   --success-foreground: #222;
-  --destructive-foreground: oklch(1 0 0);
+  --warning-foreground: #222;
+  --info-foreground: #222;
+  --destructive-foreground: oklch(0.2679 0.0036 106.6427);
   --border: oklch(0.3618 0.0101 106.8928);
   --input: oklch(0.4336 0.0113 100.2195);
   --ring: oklch(0.6724 0.1308 38.7559);
@@ -79,17 +83,21 @@
   --popover: oklch(0.3085 0.0035 106.6039);
   --popover-foreground: oklch(0.9211 0.004 106.4781);
   --primary: oklch(0.6724 0.1308 38.7559);
-  --primary-foreground: oklch(1 0 0);
+  --primary-foreground: oklch(0.2679 0.0036 106.6427);
   --secondary: oklch(0.9818 0.0054 95.0986);
   --secondary-foreground: oklch(0.3085 0.0035 106.6039);
   --muted: oklch(0.2213 0.0038 106.707);
   --muted-foreground: oklch(0.7713 0.0169 99.0657);
   --accent: oklch(0.213 0.0078 95.4245);
   --accent-foreground: oklch(0.9663 0.008 98.8792);
-  --destructive: oklch(0.6368 0.2078 25.3313);
+  --destructive: #fa7979;
   --success: #9aff8d;
+  --warning: #ffe678;
+  --info: #7bbff7;
   --success-foreground: #222;
-  --destructive-foreground: oklch(1 0 0);
+  --warning-foreground: #222;
+  --info-foreground: #222;
+  --destructive-foreground: oklch(0.2679 0.0036 106.6427);
   --border: oklch(0.3618 0.0101 106.8928);
   --input: oklch(0.4336 0.0113 100.2195);
   --ring: oklch(0.6724 0.1308 38.7559);
@@ -161,6 +169,12 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -259,5 +273,518 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+  }
+}
+
+/* PDF Export Styles - Professional styling for PDF exports */
+
+/* Base resets for html2canvas compatibility */
+.pdf-export-mode * {
+  background-color: revert !important;
+  color: revert !important;
+  border-color: revert !important;
+  box-shadow: none !important;
+}
+
+/* Hide navigation elements */
+.pdf-export-mode header,
+.pdf-export-mode aside,
+.pdf-export-mode footer,
+.pdf-export-mode nav,
+.pdf-export-mode button[class*="export"] {
+  display: none !important;
+}
+
+/* Main container styling */
+.pdf-export-mode {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif !important;
+  line-height: 1.6 !important;
+}
+
+.pdf-export-mode main {
+  margin: 0 !important;
+  padding: 30px 40px !important;
+  max-width: 100% !important;
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
+/* Typography - Professional hierarchy */
+.pdf-export-mode h1 {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 12px !important;
+  margin-top: 0 !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.2 !important;
+}
+
+.pdf-export-mode h2 {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  margin-bottom: 16px !important;
+  margin-top: 24px !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  padding-bottom: 8px !important;
+}
+
+.pdf-export-mode h3 {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  margin-bottom: 12px !important;
+  margin-top: 16px !important;
+}
+
+.pdf-export-mode h4 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  margin-bottom: 8px !important;
+}
+
+.pdf-export-mode p {
+  margin-bottom: 12px !important;
+  color: #475569 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* Color system - Professional palette */
+.pdf-export-mode .text-primary {
+  color: #0ea5e9 !important;
+}
+
+.pdf-export-mode .bg-primary {
+  background-color: #0ea5e9 !important;
+  color: #ffffff !important;
+}
+
+.pdf-export-mode .text-muted-foreground {
+  color: #64748b !important;
+}
+
+.pdf-export-mode .text-foreground {
+  color: #1e293b !important;
+}
+
+.pdf-export-mode .text-destructive {
+  color: #dc2626 !important;
+}
+
+.pdf-export-mode .bg-destructive {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.pdf-export-mode .border {
+  border-color: #e2e8f0 !important;
+}
+
+/* Cards - Professional styling */
+.pdf-export-mode [class*="Card"],
+.pdf-export-mode [data-testid*="card"] {
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  page-break-inside: avoid !important;
+  margin-bottom: 20px !important;
+  padding: 20px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.pdf-export-mode [class*="CardHeader"] {
+  margin-bottom: 16px !important;
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.pdf-export-mode [class*="CardTitle"] {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+}
+
+.pdf-export-mode [class*="CardDescription"] {
+  font-size: 13px !important;
+  color: #64748b !important;
+  margin-top: 4px !important;
+}
+
+.pdf-export-mode [class*="CardContent"] {
+  padding: 0 !important;
+}
+
+/* Badges - Clear and professional */
+.pdf-export-mode [class*="badge"],
+.pdf-export-mode [class*="Badge"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 4px 10px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.3px !important;
+  text-transform: uppercase !important;
+}
+
+.pdf-export-mode .bg-background {
+  background-color: #ffffff !important;
+}
+
+.pdf-export-mode .bg-card {
+  background-color: #ffffff !important;
+}
+
+.pdf-export-mode .bg-muted {
+  background-color: #f8fafc !important;
+}
+
+.pdf-export-mode .text-secondary {
+  color: #475569 !important;
+}
+
+.pdf-export-mode .bg-secondary {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+.pdf-export-mode .text-accent {
+  color: #0ea5e9 !important;
+}
+
+.pdf-export-mode .bg-accent {
+  background-color: #0ea5e9 !important;
+  color: #ffffff !important;
+}
+
+/* Badge colors - Status indicators */
+.pdf-export-mode [class*="badge"][class*="destructive"],
+.pdf-export-mode [class*="Badge"][class*="destructive"] {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+.pdf-export-mode [class*="badge"][class*="default"],
+.pdf-export-mode [class*="Badge"][class*="default"] {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+  border: 1px solid #93c5fd !important;
+}
+
+.pdf-export-mode [class*="badge"][class*="secondary"],
+.pdf-export-mode [class*="Badge"][class*="secondary"] {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.pdf-export-mode [class*="badge"][class*="outline"],
+.pdf-export-mode [class*="Badge"][class*="outline"] {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border: 1.5px solid #cbd5e1 !important;
+}
+
+/* Specific badge colors */
+.pdf-export-mode .bg-green-50 {
+  background-color: #f0fdf4 !important;
+}
+
+.pdf-export-mode .text-green-600 {
+  color: #16a34a !important;
+}
+
+.pdf-export-mode .bg-red-50 {
+  background-color: #fef2f2 !important;
+}
+
+.pdf-export-mode .text-red-600 {
+  color: #dc2626 !important;
+}
+
+.pdf-export-mode .bg-yellow-50 {
+  background-color: #fefce8 !important;
+}
+
+.pdf-export-mode .text-yellow-600 {
+  color: #ca8a04 !important;
+}
+
+.pdf-export-mode .bg-blue-50 {
+  background-color: #eff6ff !important;
+}
+
+.pdf-export-mode .text-blue-600 {
+  color: #2563eb !important;
+}
+
+/* Grid system - Professional layout */
+.pdf-export-mode .grid {
+  display: grid !important;
+  gap: 20px !important;
+}
+
+.pdf-export-mode .space-y-6 > * {
+  margin-bottom: 24px !important;
+}
+
+.pdf-export-mode .space-y-4 > * {
+  margin-bottom: 16px !important;
+}
+
+.pdf-export-mode .space-y-3 > * {
+  margin-bottom: 12px !important;
+}
+
+.pdf-export-mode .space-y-2 > * {
+  margin-bottom: 8px !important;
+}
+
+/* Spacing utilities */
+.pdf-export-mode .mb-2 {
+  margin-bottom: 8px !important;
+}
+
+.pdf-export-mode .mb-4 {
+  margin-bottom: 16px !important;
+}
+
+.pdf-export-mode .mb-6 {
+  margin-bottom: 24px !important;
+}
+
+.pdf-export-mode .mt-2 {
+  margin-top: 8px !important;
+}
+
+.pdf-export-mode .mt-4 {
+  margin-top: 16px !important;
+}
+
+.pdf-export-mode .gap-2 {
+  gap: 8px !important;
+}
+
+.pdf-export-mode .gap-4 {
+  gap: 16px !important;
+}
+
+.pdf-export-mode .gap-6 {
+  gap: 24px !important;
+}
+
+/* Charts and visual elements */
+.pdf-export-mode canvas {
+  max-width: 100% !important;
+  height: auto !important;
+  page-break-inside: avoid !important;
+  margin: 20px auto !important;
+  display: block !important;
+}
+
+.pdf-export-mode img {
+  max-width: 100% !important;
+  height: auto !important;
+  page-break-inside: avoid !important;
+}
+
+.pdf-export-mode svg {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Icons - Better visibility */
+.pdf-export-mode [class*="lucide"] {
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 4px !important;
+  vertical-align: middle !important;
+}
+
+/* Large numbers and metrics */
+.pdf-export-mode .text-3xl {
+  font-size: 30px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+.pdf-export-mode .text-2xl {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.pdf-export-mode .text-xl {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+.pdf-export-mode .text-lg {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}
+
+.pdf-export-mode .text-sm {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.pdf-export-mode .text-xs {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+.pdf-export-mode .font-bold {
+  font-weight: 700 !important;
+}
+
+.pdf-export-mode .font-semibold {
+  font-weight: 600 !important;
+}
+
+.pdf-export-mode .font-medium {
+  font-weight: 500 !important;
+}
+
+/* Lists - Better readability */
+.pdf-export-mode ul {
+  list-style-type: disc !important;
+  padding-left: 24px !important;
+  margin-bottom: 16px !important;
+}
+
+.pdf-export-mode ol {
+  list-style-type: decimal !important;
+  padding-left: 24px !important;
+  margin-bottom: 16px !important;
+}
+
+.pdf-export-mode li {
+  margin-bottom: 8px !important;
+  line-height: 1.6 !important;
+  color: #475569 !important;
+}
+
+/* Borders and dividers */
+.pdf-export-mode .border {
+  border: 1px solid #e2e8f0 !important;
+}
+
+.pdf-export-mode .border-t {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.pdf-export-mode .border-b {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.pdf-export-mode .border-l {
+  border-left: 3px solid #e2e8f0 !important;
+}
+
+.pdf-export-mode .border-primary {
+  border-color: #0ea5e9 !important;
+}
+
+/* Rounded corners */
+.pdf-export-mode .rounded-lg {
+  border-radius: 8px !important;
+}
+
+.pdf-export-mode .rounded-md {
+  border-radius: 6px !important;
+}
+
+/* Page breaks - Professional layout */
+.pdf-export-mode .space-y-6 > *,
+.pdf-export-mode [class*="Card"],
+.pdf-export-mode [data-testid*="card"] {
+  page-break-inside: avoid !important;
+}
+
+.pdf-export-mode h1,
+.pdf-export-mode h2,
+.pdf-export-mode h3 {
+  page-break-after: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+/* Executive summary and key metrics */
+.pdf-export-mode .text-center {
+  text-align: center !important;
+}
+
+.pdf-export-mode .flex {
+  display: flex !important;
+}
+
+.pdf-export-mode .items-center {
+  align-items: center !important;
+}
+
+.pdf-export-mode .justify-between {
+  justify-content: space-between !important;
+}
+
+.pdf-export-mode .flex-1 {
+  flex: 1 !important;
+}
+
+/* Padding utilities */
+.pdf-export-mode .p-4 {
+  padding: 16px !important;
+}
+
+.pdf-export-mode .p-6 {
+  padding: 24px !important;
+}
+
+.pdf-export-mode .px-2 {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+.pdf-export-mode .py-2 {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* Print/PDF specific styles */
+@media print {
+  header,
+  aside,
+  footer,
+  nav {
+    display: none !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 10mm !important;
+    max-width: 100% !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .space-y-6 > * {
+    page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
   }
 }

@@ -1,17 +1,30 @@
-"use client"
+"use client";
 
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ScoreRadarChartProps {
   scores: {
-    security: number
-    codeQuality: number
-    performance: number
-    bugs: number
-    maintainability: number
-    architecture: number
-  }
+    security: number;
+    codeQuality: number;
+    performance: number;
+    bugs: number;
+    maintainability: number;
+    architecture: number;
+  };
 }
 
 export function ScoreRadarChart({ scores }: ScoreRadarChartProps) {
@@ -46,13 +59,15 @@ export function ScoreRadarChart({ scores }: ScoreRadarChartProps) {
       score: scores.architecture,
       fullMark: 10,
     },
-  ]
+  ];
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Análisis por Categorías</CardTitle>
-        <CardDescription>Visualización de puntuaciones en las 6 dimensiones</CardDescription>
+        <CardDescription>
+          Visualización de puntuaciones en las 6 dimensiones
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={400}>
@@ -63,13 +78,13 @@ export function ScoreRadarChart({ scores }: ScoreRadarChartProps) {
             <Radar
               name="Puntuación"
               dataKey="score"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
-              fillOpacity={0.6}
+              stroke="var(--color-primary)"
+              fill="var(--color-primary)"
+              fillOpacity={0.3}
             />
           </RadarChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

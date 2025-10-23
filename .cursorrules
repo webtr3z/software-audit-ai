@@ -1,0 +1,633 @@
+# Cursor Rules for Software Audit AI
+
+You are an expert Next.js developer working on a software audit application powered by AI. Follow these rules and conventions when working on this codebase.
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript (strict mode)
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
+- **Styling:** Tailwind CSS
+- **UI Components:** Shadcn UI + Radix UI
+- **AI Integration:** Anthropic Claude (Sonnet 4.5)
+- **Icons:** Lucide React
+- **Charts:** Recharts
+
+---
+
+## Code Style
+
+### General Principles
+
+1. **Use functional components** - No class components
+2. **Prefer declarative programming** - Avoid imperative patterns
+3. **Favor composition** - Break down complex components
+4. **Use descriptive names** - Variables should be self-documenting
+5. **Early returns** - Handle errors and edge cases early
+6. **DRY but not too DRY** - Avoid premature abstraction
+
+### TypeScript
+
+- Always use TypeScript with strict mode
+- Define explicit types for props and function parameters
+- Use interfaces for object shapes
+- Use type aliases for unions and complex types
+- Avoid `any` - use `unknown` if type is truly unknown
+- Use type assertions sparingly
+
+```typescript
+// Good
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+}
+
+function updateProfile(profile: UserProfile): Promise<void> {
+  // implementation
+}
+
+// Bad
+function updateProfile(profile: any) {
+  // implementation
+}
+```
+
+### React Components
+
+- Use functional components with hooks
+- Prefer React Server Components (RSC) by default
+- Add `"use client"` directive only when necessary (state, effects, browser APIs)
+- Use `"use server"` for server actions
+- Component files should be named with PascalCase
+- One component per file (except for tightly coupled sub-components)
+
+```typescript
+// Server Component (default)
+export default async function ProjectsPage() {
+  const projects = await fetchProjects();
+  return <ProjectsList projects={projects} />;
+}
+
+// Client Component (when needed)
+("use client");
+
+import { useState } from "react";
+
+export function InteractiveTable({ data }: Props) {
+  const [selected, setSelected] = useState<string[]>([]);
+  // ...
+}
+```
+
+---
+
+## File Structure
+
+### Directory Naming
+
+- Use lowercase with hyphens: `user-profile`, `project-details`
+- Group related files in directories
+
+### File Naming
+
+- **Pages:** `page.tsx` (Next.js convention)
+- **Layouts:** `layout.tsx` (Next.js convention)
+- **Components:** `kebab-case.tsx` (e.g., `user-profile-form.tsx`)
+- **Actions:** `kebab-case.ts` (e.g., `generate-report.ts`)
+- **Utils:** `kebab-case.ts` (e.g., `format-currency.ts`)
+- **Types:** `types.ts` or inline in components
+
+### Component Structure
+
+Order elements in components:
+
+1. Imports (grouped: external, internal, types, styles)
+2. Type definitions
+3. Component function
+4. Helper functions
+5. Exports
+
+```typescript
+// 1. Imports
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import type { Project } from "@/types";
+
+// 2. Types
+interface ProjectFormProps {
+  project?: Project;
+  onSubmit: (data: Project) => void;
+}
+
+// 3. Component
+export function ProjectForm({ project, onSubmit }: ProjectFormProps) {
+  const [formData, setFormData] = useState(project);
+
+  // Component logic
+
+  return (
+    // JSX
+  );
+}
+
+// 4. Helper functions (if not used elsewhere)
+function validateProject(data: Project): boolean {
+  // ...
+}
+```
+
+---
+
+## Supabase Patterns
+
+### Client Usage
+
+- **Server Components:** Use `createClient()` from `@/lib/supabase/server`
+- **Client Components:** Use `createClient()` from `@/lib/supabase/client`
+- **Server Actions:** Use `createClient()` from `@/lib/supabase/server`
+- **API Routes:** Use `createClient()` from `@/lib/supabase/server`
+
+```typescript
+// Server Component
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Page() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("projects").select("*");
+  // ...
+}
+
+// Client Component
+("use client");
+import { createClient } from "@/lib/supabase/client";
+
+export function Component() {
+  const supabase = createClient();
+  // ...
+}
+```
+
+### Query Patterns
+
+- Select only needed columns
+- Use proper joins with `select()`
+- Order results when necessary
+- Handle errors explicitly
+
+```typescript
+// Good
+const { data, error } = await supabase
+  .from("projects")
+  .select("id, name, status, analyses(overall_score)")
+  .eq("user_id", userId)
+  .order("created_at", { ascending: false });
+
+if (error) {
+  console.error("Error fetching projects:", error);
+  return { error: "Failed to fetch projects" };
+}
+
+// Bad
+const { data } = await supabase.from("projects").select("*");
+```
+
+### Row Level Security
+
+- Always implement RLS policies for new tables
+- Test policies thoroughly
+- Use `auth.uid()` in policies for user data
+- Consider public vs private data carefully
+
+---
+
+## Server Actions
+
+### Patterns
+
+- Always use `"use server"` directive
+- Functions must be `async`
+- Return objects with success/error states
+- Validate user authentication
+- Handle errors gracefully
+
+```typescript
+"use server";
+
+import { createClient } from "@/lib/supabase/server";
+
+export async function createProject(data: ProjectData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated", success: false };
+  }
+
+  // Validation
+  if (!data.name || data.name.length < 3) {
+    return { error: "Name must be at least 3 characters", success: false };
+  }
+
+  // Database operation
+  const { data: project, error } = await supabase
+    .from("projects")
+    .insert({ ...data, user_id: user.id })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating project:", error);
+    return { error: "Failed to create project", success: false };
+  }
+
+  return { success: true, project };
+}
+```
+
+---
+
+## API Routes
+
+### Structure
+
+- Use Next.js 15 route handlers
+- Export named functions (GET, POST, PUT, DELETE, PATCH)
+- Return `NextResponse` objects
+- Handle errors with try-catch
+- Validate authentication
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const body = await request.json();
+
+    // Validation
+    if (!body.name) {
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
+    }
+
+    // Business logic
+
+    return NextResponse.json({ success: true, data: result });
+  } catch (error: any) {
+    console.error("Error in API route:", error);
+    return NextResponse.json(
+      { error: error.message || "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+---
+
+## UI Components
+
+### Shadcn UI
+
+- Use Shadcn UI components from `@/components/ui`
+- Customize in the component file, not in usage
+- Follow Shadcn conventions for styling
+
+### Component Patterns
+
+```typescript
+// Good - Prop drilling for simple cases
+<Button onClick={handleClick} disabled={isLoading}>
+  {isLoading ? "Loading..." : "Submit"}
+</Button>
+
+// Good - Composition for complex cases
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    Content here
+  </CardContent>
+</Card>
+```
+
+### Loading States
+
+- Always show loading states for async operations
+- Use skeleton loaders for better UX
+- Handle empty states explicitly
+
+```typescript
+if (isLoading) {
+  return <LoadingSkeleton />;
+}
+
+if (!data || data.length === 0) {
+  return <EmptyState />;
+}
+
+return <DataDisplay data={data} />;
+```
+
+---
+
+## Error Handling
+
+### Client-Side
+
+- Use try-catch for async operations
+- Show user-friendly error messages
+- Use toast notifications from `@/hooks/use-toast`
+
+```typescript
+try {
+  await submitForm(data);
+  toast({
+    title: "Success",
+    description: "Form submitted successfully",
+  });
+} catch (error) {
+  toast({
+    title: "Error",
+    description:
+      error instanceof Error ? error.message : "Something went wrong",
+    variant: "destructive",
+  });
+}
+```
+
+### Server-Side
+
+- Log errors with context
+- Return structured error responses
+- Don't expose sensitive information
+
+```typescript
+try {
+  // operation
+} catch (error) {
+  console.error("[v0] Error in operation:", error, { userId, projectId });
+  return { error: "Operation failed", success: false };
+}
+```
+
+---
+
+## AI Integration
+
+### Anthropic Claude
+
+- Use environment variable `ANTHROPIC_API_KEY`
+- Implement retry logic for failures
+- Handle token limits gracefully
+- Stream responses when appropriate
+- Log token usage
+
+```typescript
+import Anthropic from "@anthropic-ai/sdk";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const response = await anthropic.messages.create({
+  model: "claude-sonnet-4-5-20250929",
+  max_tokens: 16384,
+  temperature: 1.0,
+  messages: [{ role: "user", content: prompt }],
+});
+```
+
+### Prompt Engineering
+
+- Store prompts in `lib/ai/prompts.ts`
+- Use clear, structured prompts
+- Request JSON output explicitly
+- Include examples when helpful
+- Version prompts for tracking
+
+---
+
+## Database Migrations
+
+### Creating Migrations
+
+1. Create file in `/scripts` with incrementing number: `XXX_description.sql`
+2. Include IF NOT EXISTS clauses
+3. Add comments for documentation
+4. Include RLS policies
+5. Add indexes for performance
+6. Create triggers for `updated_at`
+
+```sql
+-- 010_create_feature.sql
+
+-- Create table
+CREATE TABLE IF NOT EXISTS feature_table (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE feature_table ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+CREATE POLICY "Users can view own records"
+  ON feature_table FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Create indexes
+CREATE INDEX idx_feature_table_user_id ON feature_table(user_id);
+
+-- Create trigger
+CREATE TRIGGER update_feature_table_updated_at
+  BEFORE UPDATE ON feature_table
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+```
+
+---
+
+## Testing
+
+### Approach
+
+- Write tests for critical business logic
+- Test server actions
+- Test utility functions
+- Use Jest for unit tests
+- Mock Supabase client
+
+---
+
+## Performance
+
+### Optimization Strategies
+
+1. **Use React Server Components** - Reduces client-side JavaScript
+2. **Dynamic Imports** - Code split heavy components
+3. **Optimize Images** - Use Next.js Image component
+4. **Database Indexes** - Index frequently queried columns
+5. **Memoization** - Use React.memo, useMemo, useCallback sparingly
+6. **Pagination** - Implement for large data sets
+
+---
+
+## Security
+
+### Checklist
+
+- ✅ Validate all user input
+- ✅ Sanitize data before database operations
+- ✅ Use RLS policies for data access
+- ✅ Check authentication in all protected routes
+- ✅ Verify user owns resources before operations
+- ✅ Use environment variables for secrets
+- ✅ Never expose API keys or secrets to client
+- ✅ Implement rate limiting for sensitive operations
+
+---
+
+## Accessibility
+
+### Requirements
+
+- Use semantic HTML
+- Include proper ARIA labels
+- Ensure keyboard navigation works
+- Provide alt text for images
+- Use sufficient color contrast
+- Support screen readers
+
+---
+
+## Git Conventions
+
+### Commit Messages
+
+```
+feat: Add consolidated report generation
+fix: Resolve authentication redirect loop
+docs: Update API documentation
+style: Format code with prettier
+refactor: Simplify project query logic
+test: Add tests for scoring functions
+chore: Update dependencies
+```
+
+### Branch Naming
+
+- `feature/description` - New features
+- `fix/description` - Bug fixes
+- `refactor/description` - Code refactoring
+- `docs/description` - Documentation updates
+
+---
+
+## Documentation
+
+### Code Comments
+
+- Add JSDoc comments for exported functions
+- Explain "why" not "what"
+- Document complex algorithms
+- Add TODO comments with context
+
+```typescript
+/**
+ * Calculates the overall score as the average of all category scores.
+ *
+ * @param scores - Object containing scores for each category (0-10)
+ * @returns Overall score rounded to one decimal place
+ */
+export function calculateOverallScore(scores: CategoryScores): number {
+  const values = Object.values(scores);
+  const sum = values.reduce((acc, val) => acc + val, 0);
+  return Math.round((sum / values.length) * 10) / 10;
+}
+```
+
+---
+
+## When in Doubt
+
+1. **Check existing patterns** - Look at similar components/functions
+2. **Prefer simplicity** - Don't over-engineer
+3. **Ask for clarification** - Better to ask than assume
+4. **Test thoroughly** - Verify your changes work
+5. **Document decisions** - Help future developers
+
+---
+
+## Project-Specific Conventions
+
+### Analysis Status
+
+Use the status manager for real-time updates:
+
+```typescript
+import { analysisStatusManager } from "@/lib/analysis-status-manager";
+
+analysisStatusManager.emit(projectId, "Analyzing security...", "security");
+```
+
+### Currency Formatting
+
+Use the Intl API for consistency:
+
+```typescript
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+```
+
+### Date Formatting
+
+Use consistent Spanish locale:
+
+```typescript
+new Date(dateString).toLocaleDateString("es-ES", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+```
+
+---
+
+## Debugging
+
+- Use descriptive console.log prefixes: `console.log("[v0] Step description:", data)`
+- Check browser console for client errors
+- Check terminal for server errors
+- Use Supabase dashboard to verify database state
+- Test RLS policies by switching users
+
+---
+
+**Remember:** Quality over speed. Write code that's easy to understand and maintain.
