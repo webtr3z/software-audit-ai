@@ -1,175 +1,221 @@
-import "../../lib/styles/agets-loader.css";
+"use client";
+import React from "react";
 
-export default function AgentsLoader() {
+type LoaderProps = {
+  /** Escala visual del loader respecto al tamaño base (148x100). */
+  scale?: number; // default: 1
+  /** Color de las bolitas. */
+  dotColor?: string; // default: "#000"
+  /** Duración del ciclo en segundos. */
+  duration?: number; // default: 1.2
+  /** Separación entre fases (en segundos) para los loaders 2 y 3. */
+  phaseGap?: number; // default: 0.15
+  /** Clase extra para estilizar el contenedor externo. */
+  className?: string;
+};
+
+const AgentsLoader: React.FC<LoaderProps> = ({
+  scale = 1,
+  dotColor = "#D97757",
+  duration = 1.2,
+  phaseGap = 0.15,
+  className = "",
+}) => {
+  const delay2 = `${phaseGap}s`;
+  const delay3 = `${phaseGap * 2}s`;
+
   return (
-    <div className="main-container">
+    <div
+      className={`loader-wrapper ${className}`}
+      style={
+        {
+          // CSS Custom Props
+          ["--scale" as any]: scale,
+          ["--dotColor" as any]: dotColor,
+          ["--duration" as any]: `${duration}s`,
+        } as React.CSSProperties
+      }
+    >
       <div className="loader">
-        <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            {/* <linearGradient id="chipGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#2d2d2d"></stop>
-              <stop offset="100%" stop-color="#0f0f0f"></stop>
-            </linearGradient> */}
-
-            <linearGradient id="textGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#eeeeee"></stop>
-              <stop offset="100%" stop-color="#888888"></stop>
-            </linearGradient>
-
-            <linearGradient id="pinGradient" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="0%" stop-color="#bbbbbb"></stop>
-              <stop offset="50%" stop-color="#888888"></stop>
-              <stop offset="100%" stop-color="#555555"></stop>
-            </linearGradient>
-          </defs>
-
-          <g id="traces">
-            <path d="M100 100 H200 V210 H326" className="trace-bg"></path>
-            <path
-              d="M100 100 H200 V210 H326"
-              className="trace-flow purple"
-            ></path>
-
-            <path d="M80 180 H180 V230 H326" className="trace-bg"></path>
-            <path d="M80 180 H180 V230 H326" className="trace-flow blue"></path>
-
-            <path d="M60 260 H150 V250 H326" className="trace-bg"></path>
-            <path
-              d="M60 260 H150 V250 H326"
-              className="trace-flow yellow"
-            ></path>
-
-            <path d="M100 350 H200 V270 H326" className="trace-bg"></path>
-            <path
-              d="M100 350 H200 V270 H326"
-              className="trace-flow green"
-            ></path>
-
-            <path d="M700 90 H560 V210 H474" className="trace-bg"></path>
-            <path d="M700 90 H560 V210 H474" className="trace-flow blue"></path>
-
-            <path d="M740 160 H580 V230 H474" className="trace-bg"></path>
-            <path
-              d="M740 160 H580 V230 H474"
-              className="trace-flow green"
-            ></path>
-
-            <path d="M720 250 H590 V250 H474" className="trace-bg"></path>
-            <path d="M720 250 H590 V250 H474" className="trace-flow red"></path>
-
-            <path d="M680 340 H570 V270 H474" className="trace-bg"></path>
-            <path
-              d="M680 340 H570 V270 H474"
-              className="trace-flow yellow"
-            ></path>
-          </g>
-
-          <rect
-            x="330"
-            y="190"
-            width="140"
-            height="100"
-            rx="20"
-            ry="20"
-            fill="url(#chipGradient)"
-            stroke="#222"
-            stroke-width="3"
-            filter="drop-shadow(0 0 6px rgba(0,0,0,0.8))"
-          ></rect>
-
-          <g>
-            <rect
-              x="322"
-              y="205"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-            <rect
-              x="322"
-              y="225"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-            <rect
-              x="322"
-              y="245"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-            <rect
-              x="322"
-              y="265"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-          </g>
-
-          <g>
-            <rect
-              x="470"
-              y="205"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-            <rect
-              x="470"
-              y="225"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-            <rect
-              x="470"
-              y="245"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-            <rect
-              x="470"
-              y="265"
-              width="8"
-              height="10"
-              fill="url(#pinGradient)"
-              rx="2"
-            ></rect>
-          </g>
-
-          <text
-            x="400"
-            y="240"
-            font-family="Arial, sans-serif"
-            font-size="22"
-            fill="url(#textGradient)"
-            text-anchor="middle"
-            alignment-baseline="middle"
-          >
-            Loading
-          </text>
-
-          <circle cx="100" cy="100" r="5" fill="black"></circle>
-          <circle cx="80" cy="180" r="5" fill="black"></circle>
-          <circle cx="60" cy="260" r="5" fill="black"></circle>
-          <circle cx="100" cy="350" r="5" fill="black"></circle>
-
-          <circle cx="700" cy="90" r="5" fill="black"></circle>
-          <circle cx="740" cy="160" r="5" fill="black"></circle>
-          <circle cx="720" cy="250" r="5" fill="black"></circle>
-          <circle cx="680" cy="340" r="5" fill="black"></circle>
-        </svg>
+        <div className="roller" />
+        <div className="roller" />
       </div>
+
+      <div className="loader" style={{ ["--delay" as any]: delay2 }}>
+        <div className="roller" />
+        <div className="roller" />
+      </div>
+
+      <div className="loader" style={{ ["--delay" as any]: delay3 }}>
+        <div className="roller" />
+        <div className="roller" />
+      </div>
+
+      <style jsx>{`
+        .loader-wrapper {
+          /* Tamaño base del arte original */
+          width: 148px;
+          height: 100px;
+          position: relative;
+          display: inline-block;
+          transform: scale(var(--scale));
+          transform-origin: center;
+          /* Quita si no quieres que "ocupe" el tamaño escalado físicamente */
+          /* will-change: transform; */
+        }
+
+        .loader {
+          width: 148px;
+          height: 100px;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+
+        /* Sombra animada bajo el punto */
+        .loader::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          height: 0.25em;
+          width: 1em;
+          border-radius: 50%;
+          background-color: rgba(0, 0, 0, 0.9);
+          opacity: 0.3;
+          animation: shadow var(--duration) linear infinite;
+          animation-delay: var(--delay, 0s);
+        }
+
+        .roller,
+        .roller:last-child {
+          width: 70px;
+          height: 70px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: rotate(135deg);
+          animation: rollercoaster var(--duration) linear infinite;
+          animation-delay: var(--delay, 0s);
+        }
+
+        .roller:last-child {
+          left: auto;
+          right: 0;
+          transform: rotate(-45deg);
+          animation: rollercoaster2 var(--duration) linear infinite;
+        }
+
+        .roller::before {
+          content: "";
+          display: block;
+          width: 15px;
+          height: 15px;
+          background: var(--dotColor);
+          border-radius: 50%;
+        }
+
+        /* ===== Keyframes (no-prefixed) ===== */
+
+        @keyframes rollercoaster {
+          0% {
+            transform: rotate(135deg);
+          }
+          8% {
+            transform: rotate(240deg);
+          }
+          20% {
+            transform: rotate(300deg);
+          }
+          40% {
+            transform: rotate(380deg);
+          }
+          45% {
+            transform: rotate(440deg);
+          }
+          50% {
+            transform: rotate(495deg);
+            opacity: 1;
+          }
+          50.1% {
+            transform: rotate(495deg);
+            opacity: 0;
+          }
+          100% {
+            transform: rotate(495deg);
+            opacity: 0;
+          }
+        }
+
+        @keyframes rollercoaster2 {
+          0% {
+            opacity: 0;
+          }
+          49.9% {
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+            transform: rotate(-45deg);
+          }
+          58% {
+            transform: rotate(-160deg);
+          }
+          70% {
+            transform: rotate(-240deg);
+          }
+          80% {
+            transform: rotate(-300deg);
+          }
+          90% {
+            transform: rotate(-340deg);
+          }
+          100% {
+            transform: rotate(-405deg);
+          }
+        }
+
+        @keyframes shadow {
+          0% {
+            opacity: 0.3;
+            transform: translateX(65px) scale(0.5, 0.5);
+          }
+          8% {
+            transform: translateX(30px) scale(2, 2);
+          }
+          13% {
+            transform: translateX(0px) scale(1.3, 1.3);
+          }
+          30% {
+            transform: translateX(-15px) scale(0.5, 0.5);
+            opacity: 0.1;
+          }
+          50% {
+            transform: translateX(60px) scale(1.2, 1.2);
+            opacity: 0.3;
+          }
+          60% {
+            transform: translateX(130px) scale(2, 2);
+            opacity: 0.05;
+          }
+          65% {
+            transform: translateX(145px) scale(1.2, 1.2);
+          }
+          80% {
+            transform: translateX(120px) scale(0.5, 0.5);
+            opacity: 0.1;
+          }
+          90% {
+            transform: translateX(80px) scale(0.8, 0.8);
+          }
+          100% {
+            transform: translateX(60px);
+            opacity: 0.3;
+          }
+        }
+      `}</style>
     </div>
   );
-}
+};
+
+export default AgentsLoader;

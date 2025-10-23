@@ -8,14 +8,13 @@ import { AnalysisStatus } from "@/components/analysis-status";
 export default function PlaygroundPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-8">
-      {/* <Card className="w-48 h-48 mx-auto">
-        <CardContent className="flex items-center justify-center h-full">
-          <RectsLoader />
+      <Card className="">
+        <CardContent className="">
+          <div className="flex items-center gap-3 justify-center">
+            <AgentsLoader scale={0.65} />
+          </div>
         </CardContent>
-      </Card> */}
-      <GeometricLoader />
-      {/* <RectsLoader /> */}
-      <AnalysisStatus isAnalyzing={true} projectId="123" />
+      </Card>
     </div>
   );
 }

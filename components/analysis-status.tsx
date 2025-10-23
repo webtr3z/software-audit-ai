@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import GeometricLoader from "./loaders/geometric-loader";
 import SparkyLoader from "./loaders/sparky-loader";
+import AgentsLoader from "./loaders/agents-loader";
 
 interface AnalysisStatusProps {
   isAnalyzing: boolean;
@@ -63,12 +64,8 @@ export function AnalysisStatus({
   if (!isAnalyzing) return null;
 
   return (
-    <Card className="p-[0px]!">
-      <CardContent className="p-[0px]!">
-        <div className="flex items-center gap-3 justify-center">
-          <SparkyLoader />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex items-center gap-3 justify-center">
+      <AgentsLoader scale={0.65} />
+    </div>
   );
 }
